@@ -77,14 +77,14 @@ const AllConsents =({web3})=> {
         // console.log(web3);  
         let consentJson = {"consentId" : "","Patientname":"","Doctorname":"","Consent Data":""};
         let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
-        await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+        await contract.methods.GetConsents().call({from: user.account}).then(async function (consents){
             var allConsents = [];
             // console.log(consents.length);
             for(var i=0;i<consents.length;i++){
                 consentJson = {"consentId" : consents[i],"Patientname":"","Doctorname":"","Consent Data":""};
                 let consent_abi = require("../contracts/Consent.json")["abi"];
                 const _consent = new web3.eth.Contract(consent_abi,consents[i]);
-                const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
+                const status = await _consent.methods.getStatus().call({from: user.account})
                 // console.log("Consent Status: " + status);
                 if(status == 2 || status == 3){
                     

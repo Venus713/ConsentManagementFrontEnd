@@ -24,7 +24,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
         e.preventDefault();
         handleClose();
         setSelectedDoc(selectedDoc.substr(0,selectedDoc.indexOf("(")))
-        // console.log(selectedDoc);
+        console.log(selectedDoc);
         
         let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
         let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
@@ -46,6 +46,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
                       progress: undefined,
                     });
             },(error)=>{
+                console.log(error);
                 toast.error('Something went wrong', {
                     position: "top-right",
                       autoClose: 2000,
@@ -58,7 +59,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
                 throw(error)
             }
         )
-        // .catch(console.error);
+        .catch(err => console.log(err));
         return;
     }
 

@@ -77,18 +77,18 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         
         // console.log("is this called ?")
         
-        await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+        await contract.methods.GetConsents().call({from: user.account}).then(async function (consents){
         for(var i=0;i<consents.length;i++){
             let consent_abi = require("../../contracts/Consent.json")["abi"];
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
-            var AssociatedDoc = await _consent.methods.getDoctor().call({from: user.account, gas: 4712388})
+            var AssociatedDoc = await _consent.methods.getDoctor().call({from: user.account})
             // console.log(AssociatedDoc, chosenDoc)
             // console.log(chosenDoc)
             if(AssociatedDoc ==  chosenDoc.substring(chosenDoc.indexOf("(")+1,chosenDoc.indexOf(")"))) {
-                await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
+                await _consent.methods.getTemplate().call({from: user.account}).then(async function (template){
                     let consentTemplate_abi = require("../../contracts/ConsentTemplate.json")["abi"];
                     const _template = new web3.eth.Contract(consentTemplate_abi,template);
-                    var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
+                    var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account});
                     setRecords(new Set([...records, ...consentRecords]));
                     // console.log(consentRecords,records);
 
@@ -113,7 +113,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
             let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account,gas:4712388}, async function(err,res) {
+            await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, async function(err,res) {
                 console.log("Inside Contract Hospitals",res)
                 setConnectedHospitals([...new Set(res)].filter((name) => {return name != ""}))
             });
@@ -149,12 +149,12 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
-        await contract.methods.GetConnectionFile().call({from : user.account,gas:4712388},async function(err,res) {
+        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
 
             let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account,gas:4712388},
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
                 async(err,AcceptedConnectionList) => {
                 console.log("Accepted COnnection List",AcceptedConnectionList)
                 AcceptedConnectionList.forEach(async (doctorId) => {
@@ -185,7 +185,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         // console.log("This is id: ",selectedDoc.current);
         // console.log("These are records:",Array.from(records))
     
-        await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account, gas: 4712388}).then(
+        await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account}).then(
                 (response)=>{
                     toast.success('Consent Created!', {
                         position: "top-right",

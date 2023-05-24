@@ -70,7 +70,7 @@ const DisplayRecords=({web3})=>{
           let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
           let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
           
-          ConnectionFileContract.methods.getHopitalConnections().call({from : user.account,gas:4712388}, function(err,res) {
+          ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, function(err,res) {
             setConnectedHospitals([...new Set(res)].filter((name) => {
               return name != ""
             }));
@@ -83,17 +83,17 @@ const DisplayRecords=({web3})=>{
       // console.log(web3);  
       let consentJson = {"patientId":"","recordIds":[]};
       let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
-      await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+      await contract.methods.GetConsents().call({from: user.account}).then(async function (consents){
         var allConsetedRecords = [];
         // console.log(consents.length);
         for(var i=0;i<consents.length;i++){
             consentJson = {"patientId":"","recordIds":[]};
             let consent_abi = require("../contracts/Consent.json")["abi"];
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
-            await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
+            await _consent.methods.getTemplate().call({from: user.account}).then(async function (template){
               let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
               const _template = new web3.eth.Contract(consentTemplate_abi,template);
-              var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
+              var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account});
               // console.log("Consent Records",consentRecords);
               consentJson["recordIds"]=[...consentRecords];
               // console.log(consentJson);

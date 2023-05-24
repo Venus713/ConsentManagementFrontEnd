@@ -70,7 +70,7 @@ const ConnectDoctor = ({ web3 }) => {
     // const saveConsent = async () => {
     //     let abi = require("../contracts/CMS.json");
     //     let contract = new web3.eth.Contract(abi, process.env.REACT_APP_CONTRACTADDRESS);
-    //     await contract.methods.createConsent(doctorId, records).send({ from: user.account, gas: 4712388 }).then(console.log);
+    //     await contract.methods.createConsent(doctorId, records).send({ from: user.account }).then(console.log);
     //     handleClose();
     // }
 

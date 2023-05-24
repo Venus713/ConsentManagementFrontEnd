@@ -164,7 +164,7 @@ const Logs=({web3})=>{
         
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
         console.log(contract);
-        await contract.getPastEvents('AllEvents',{fromBlock:0,toBlock:'latest'},async (err,res) => {
+        await contract.getPastEvents('AllEvents',{fromBlock:0,toBlock:'latest'},async (res) => {
             var notifs = []
             associatedLogs.current = await FilterEvents(res.reverse());
             

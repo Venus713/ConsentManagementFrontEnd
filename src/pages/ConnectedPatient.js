@@ -47,7 +47,7 @@ const ConnectedPatients=({web3})=>{
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account,gas:4712388},
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
                 async(err,AcceptedConnectionList) => {
                 // console.log(AcceptedConnectionList)
                 var doctorConnections=[];

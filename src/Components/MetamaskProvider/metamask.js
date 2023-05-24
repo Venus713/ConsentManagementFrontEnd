@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 
 import { InjectedConnector } from '@web3-react/injected-connector'
-export const injected = new InjectedConnector({ supportedNetworks: [1337,8082] })
+export const injected = new InjectedConnector({ supportedNetworks: [1337,8082,43113] })
 
 function MetamaskProvider({ children }) {
   const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React()
@@ -13,6 +13,7 @@ function MetamaskProvider({ children }) {
       .isAuthorized()
       .then((isAuthorized) => {
         console.log(isAuthorized)
+        console.log(networkActive, '===========')
         if (!networkActive && !networkError) {
           activateNetwork(injected)
           setLoaded(true)

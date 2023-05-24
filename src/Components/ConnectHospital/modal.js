@@ -52,16 +52,15 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
     let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
     let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
     
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
-    
-    console.log("Here is our user",user,CONTRACT_ADDRESS)
-    await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);
+
+    await contract.methods.GetConnectionFile().call({from : user.account},async function(res) {
 
         console.log("Connection File is here",res)
         let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
         let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
         
-        await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account,gas:4712388}, async (error,res) => {
+        await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, async (res) => {
           
           const connectedHospitals = [...new Set(res)]
           if(connectedHospitals.includes(selectedHospital)) {
@@ -83,15 +82,15 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
     
     let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
     
-    console.log("Here is our user",user,CONTRACT_ADDRESS)
-    await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+    console.log("Here is our user",user,CONTRACT_ADDRESS, '=============')
+    await contract.methods.GetConnectionFile().call({from : user.account},async function(res) {
 
         console.log("Connection File is here",res)
         let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
         let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
         
         if(!alreadyConnected) {
-          await ConnectionFileContract.methods.AddHospitalConnection(selectedHospital).send({from : user.account,gas:4712388}).then(
+          await ConnectionFileContract.methods.AddHospitalConnection(selectedHospital).send({from : user.account}).then(
             (response)=>{
                 console.log("Got correct call")
                 toast.success('Connection Successful !', {
@@ -118,7 +117,7 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
             })
         }
         else {
-          await ConnectionFileContract.methods.disconnectHospital(selectedHospital).send({from : user.account,gas:4712388}).then(
+          await ConnectionFileContract.methods.disconnectHospital(selectedHospital).send({from : user.account}).then(
             (response)=>{
                 console.log("Got correct call")
                 toast.success('Disconnection Successful !', {

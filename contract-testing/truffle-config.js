@@ -50,14 +50,23 @@ module.exports = {
      network_id: "*",       // Any network (default: none)
     //  gasPrice: web3.utils.toWei('50', 'gwei'),
     },
+    // sphinx: {
+    //   networkCheckTimeout: 1000000,    
+    //   timeoutBlocks: 2000,
+    //   // addressIndex: 2, 
+    //   provider: () => new HDWalletProvider(mnemonic, `https://sphinx.shardeum.org`),
+    //   network_id: 8082,
+    //   confirmations: 2,
+    //   skipDryRun: true, 
+    // },
     sphinx: {
       networkCheckTimeout: 1000000,    
       timeoutBlocks: 2000,
       // addressIndex: 2, 
-      provider: () => new HDWalletProvider(mnemonic, `https://sphinx.shardeum.org`),
-      network_id: 8082,
+      provider: () => new HDWalletProvider(mnemonic, `https://api.avax-test.network/ext/bc/C/rpc`),
+      network_id: 43113,
       confirmations: 2,
-      skipDryRun: true, 
+      skipDryRun: true
     },
     // Another network with more advanced options...
     advanced: {
@@ -114,5 +123,9 @@ module.exports = {
 
   db: {
     enabled: false
-  }
+  },
+
+  plugins: [
+    'truffle-contract-size'
+  ]
 };

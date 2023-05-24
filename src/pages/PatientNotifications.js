@@ -139,7 +139,7 @@ const PatientNotifications=({web3})=>{
       let consentJson = {"metaId":"","description":"","name":""};
     //   console.log(process.env.REACT_APP_CONTRACTADDRESS);
       let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
-      await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+      await contract.methods.GetConsents().call({from: user.account}).then(async function (consents){
         var allRequestedConsents = [];
         // console.log(consents.length);
         for(var i=0;i<consents.length;i++){
@@ -147,13 +147,13 @@ const PatientNotifications=({web3})=>{
             let consent_abi = require("../contracts/Consent.json")["abi"];
 
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
-            const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
+            const status = await _consent.methods.getStatus().call({from: user.account})
             // console.log("Consent Status: " + status);
             if(status == 3){
-                await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
+                await _consent.methods.getTemplate().call({from: user.account}).then(async function (template){
                 let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
                 const _template = new web3.eth.Contract(consentTemplate_abi,template);
-                var consentDescription = await _template.methods.GetRequestedDesc().call({from: user.account, gas: 4712388});
+                var consentDescription = await _template.methods.GetRequestedDesc().call({from: user.account});
                 consentJson['description']= consentDescription;
                 
                 // console.log("Consent Description",consentDescription);
@@ -197,17 +197,17 @@ const PatientNotifications=({web3})=>{
             let AllAcceptedConnections = [];
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
-            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account,gas:4712388},
+            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},
                 async(err,connections) => {
                     // console.log(connections);
                     for(var i=0;i<connections.length;i++){
                         connectionJson = {"Id" : connections[i],"metaId" : "","name" : "","description" : "","img":""};
                         let connection_abi = require("../contracts/Connection.json")["abi"];
                         const _connection = new web3.eth.Contract(connection_abi,connections[i]);
-                        const status = await _connection.methods.getStatus().call({from : user.account, gas: 4712388})
+                        const status = await _connection.methods.getStatus().call({from : user.account})
                         // console.log("Connection Status: " + status);
                         if(status == 1){
-                            var doctorMetaId = await _connection.methods.getDoctor().call({from : user.account, gas: 4712388})
+                            var doctorMetaId = await _connection.methods.getDoctor().call({from : user.account})
                             connectionJson['metaId'] = doctorMetaId;
                             axios.get(`${baseURL}/Doc/${doctorMetaId}/Profile-public`).then(
                                 (response)=>{

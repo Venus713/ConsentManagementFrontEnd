@@ -61,14 +61,14 @@ const RequestConsent = ({web3}) => {
     // console.log(web3);  
     let consentJson = {"Consent Id" : "","Patient":"","Doctor":"","Consent Data":""};
     let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
-    await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+    await contract.methods.GetConsents().call({from: user.account}).then(async function (consents){
         var allConsents = [];
         // console.log(consents.length);
         for(var i=0;i<consents.length;i++){
             consentJson = {"Consent Id" : consents[i],"Patient":"","Doctor":"", "Status":"","Description":""};
             let consent_abi = require("../contracts/Consent.json")["abi"];
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
-            const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
+            const status = await _consent.methods.getStatus().call({from: user.account})
             // console.log("Consent Status: " + status);
             await _consent.methods.getTemplate().call({from : user.account,gas: 4712388}).then(async (res) => { 
                 let consent_template_abi = require("../contracts/ConsentTemplate.json")["abi"]
@@ -129,13 +129,13 @@ const RequestConsent = ({web3}) => {
     
     let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
-    await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+    await contract.methods.GetConnectionFile().call({from : user.account},async function(res) {
 
         let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
         let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
         
         await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
-            async(err,AcceptedConnectionList) => {
+            async(AcceptedConnectionList) => {
             // console.log(AcceptedConnectionList)
             // 
             await axios.post(`${baseURL}/Pat/Profile-public`,AcceptedConnectionList).then(

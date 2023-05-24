@@ -38,6 +38,7 @@
         "reactstrap": "^9.0.1",
         "redux": "^4.1.2",
         "redux-persist": "^6.0.0",
+        "truffle-contract-size": "^2.0.1",
         "web-vitals": "^2.1.4",
         "web3": "^1.6.1"
     },

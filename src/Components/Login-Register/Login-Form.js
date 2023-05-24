@@ -52,6 +52,7 @@ const LoginForm = ({ handleClose, web3 }) => {
   const [loginError, setLoginError] = useState("");
   const [firstLogin, setfirstLogin] = useState(true);
   const [role, setRole] = useState('Pat');
+  const [accountValue, setAccountValue] = useState();
 
   const dispatch = useDispatch();
 
@@ -63,7 +64,7 @@ const LoginForm = ({ handleClose, web3 }) => {
   
 
   useEffect(() => {
-    axios.get(`${baseURL}/admin/Valid/${role}/${account}`).then(
+    axios.get(`${baseURL}/admin/Valid/${role}/${accountValue}`).then(
       (response)=>{
         console.log("Check valid or not " + response.data);
 
@@ -77,6 +78,10 @@ const LoginForm = ({ handleClose, web3 }) => {
         throw(error);
       }
     )
+    if(account) {
+      setAccountValue(account);
+    }
+    console.log(account, '-----------------------', active)
     // console.log(chainId, account, firstLogin, firstLoginRoot);
   },[account,role]);
 
@@ -95,7 +100,7 @@ const LoginForm = ({ handleClose, web3 }) => {
   const RegisterSubmit = (e) => {
     e.preventDefault();
     // console.log("dsfadsf");
-    if(!account){
+    if(!accountValue){
       toast.warn('Please connnect your Metamask', {
         position: "top-right",
         autoClose: 5000,
@@ -108,10 +113,10 @@ const LoginForm = ({ handleClose, web3 }) => {
     }
     if (firstLogin) {
         // Register();
-        if(role === "Doc" && account){
+        if(role === "Doc" && accountValue){
           axios
             .post(`${baseURL}/admin/Add${role}`, {
-              metaId: account,
+              metaId: accountValue,
               name: firstName,
               doctorLicense: doctorLicense,
               password:password,
@@ -154,7 +159,7 @@ const LoginForm = ({ handleClose, web3 }) => {
           else if(role === "Pat"){
             axios
             .post(`${baseURL}/admin/Add${role}`, {
-              metaId: account,
+              metaId: accountValue,
               name: firstName,
               abhaId: abhaId,
               password:password,
@@ -205,12 +210,13 @@ const LoginForm = ({ handleClose, web3 }) => {
 
   const ConnectWallet = async () => {
     // activateBrowserWallet();
-    await activate(injectedConnector);
+    // await activate(injectedConnector);
     // console.log("Existing User?: " + firstLogin);
     // console.log("My Account is: " + account);
-    axios.get(`${baseURL}/${role}/${account}/Valid`).then(
+    console.log(`account: ${accountValue}, role: ${role}`)
+    axios.get(`${baseURL}/admin/Valid/${role}/${accountValue}`).then(
       (response) => {
-        // console.log("Check valid or not " + response.data);
+        console.log("Check valid or not " + response.data);
         toast.success('Please Register!', {
           position: "top-right",
             autoClose: 2000,
@@ -241,7 +247,7 @@ const LoginForm = ({ handleClose, web3 }) => {
     e.preventDefault();
     // console.log("I am here")
     axios.post(`${baseURL}/login`,{
-      username: account,
+      username: accountValue,
       password: password
     }).then(
       (response)=>{
@@ -249,7 +255,7 @@ const LoginForm = ({ handleClose, web3 }) => {
         token.current = response.headers['authorization'];
         // console.log("Token: " + token.current);
         axios
-        .get(`${baseURL}/${role}/${account}/Profile`,{
+        .get(`${baseURL}/${role}/${accountValue}/Profile`,{
           headers:{
             'Authorization': token.current
           }
@@ -257,7 +263,7 @@ const LoginForm = ({ handleClose, web3 }) => {
           (response)=>{
             dispatch(
               login({
-                account: account,
+                account: accountValue,
                 firstName: response.data.name,
                 phoneNumber: response.data.phone,
                 role: role,
@@ -351,7 +357,7 @@ const LoginForm = ({ handleClose, web3 }) => {
         <form className={classes.root} onSubmit={RegisterSubmit}>
           {
           active ? (
-                    <Button variant="contained" color="info" sx={{borderRadius:"30px",backgroundColor:"#25274D"}}>{"✅ Wallet : " + account}</Button>
+                    <Button variant="contained" color="info" sx={{borderRadius:"30px",backgroundColor:"#25274D"}}>{"✅ Wallet : " + accountValue}</Button>
                   ) : (
             <Button variant="contained" onClick={ConnectWallet} style={{marginTop:"10px",marginLeft:"50px",backgroundColor:"#25274D"}}>
               Connect Metamask Wallet
@@ -409,7 +415,7 @@ const LoginForm = ({ handleClose, web3 }) => {
         )
         :(
           <form className={classes.root} onSubmit={LoginSubmit}>
-          <Button variant="extended" color="secondary" sx={{borderRadius:"20px"}}>{"Metamask: " + account}</Button>
+          <Button variant="extended" color="secondary" sx={{borderRadius:"20px"}}>{"Metamask: " + accountValue}</Button>
             {/* <Button variant="contained" onClick={()=>disconnect}>
               Disconnect
             </Button> */}
