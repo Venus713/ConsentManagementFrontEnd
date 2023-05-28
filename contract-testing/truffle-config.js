@@ -22,7 +22,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
-// const web3 = require('web3');
+const web3 = require('web3');
 
 module.exports = {
   /**
@@ -46,9 +46,9 @@ module.exports = {
     //
     development: {
      host: "127.0.0.1",     // Localhost (default: none)
-     port: 8545,            // Standard Ethereum port (default: none)
+     port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
-    //  gasPrice: web3.utils.toWei('50', 'gwei'),
+     gasPrice: web3.utils.toWei('5000', 'gwei'),
     },
     // sphinx: {
     //   networkCheckTimeout: 1000000,    

@@ -129,16 +129,14 @@ const RequestConsent = ({web3}) => {
     
     let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
-    await contract.methods.GetConnectionFile().call({from : user.account},async function(res) {
-
+    await contract.methods.GetConnectionFile().call({from : user.account},async function(err, res) {
         let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
         let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
         
-        await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
-            async(AcceptedConnectionList) => {
+        await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account}).then(async(AcceptedConnectionList) => {
             // console.log(AcceptedConnectionList)
             // 
-            await axios.post(`${baseURL}/Pat/Profile-public`,AcceptedConnectionList).then(
+            axios.post(`${baseURL}/Pat/Profile-public`,AcceptedConnectionList).then(
                 (response)=>{
                     setConnectionsProfile(response.data);
                 }

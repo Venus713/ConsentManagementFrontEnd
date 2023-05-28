@@ -16,7 +16,7 @@ import { Grid } from "@mui/material";
 import Select from "@material-ui/core/Select";
 
 
-const HospitalModalDialog = ({ open, handleClose, web3}) => {
+const HospitalModalDialog = ({ open, handleClose, web3, connectionFile}) => {
   
   const [selectedHospital,setSelectedHospital] = useState("")
   const [availableHospitals,setAvailableHospitals] = useState([])
@@ -49,29 +49,23 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
   },[selectedHospital,alreadyConnected])
 
   const SetAlreadyConnectionHospitals = async () => {
-    let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
-    let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
     
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);
-
-    await contract.methods.GetConnectionFile().call({from : user.account},async function(res) {
-
-        console.log("Connection File is here",res)
-        let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
-        let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+    if(connectionFile) {
+      let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
+      let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,connectionFile);
+      
+      await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, async (res) => {
         
-        await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, async (res) => {
-          
-          const connectedHospitals = [...new Set(res)]
-          if(connectedHospitals.includes(selectedHospital)) {
-            console.log("WE cam till here to disconnect",connectedHospitals)
-            setAlreadyConnected(true)
-          }
-          else {
-            setAlreadyConnected(false)
-          }
-        })
+        const connectedHospitals = [...new Set(res)]
+        if(connectedHospitals.includes(selectedHospital)) {
+          console.log("WE cam till here to disconnect",connectedHospitals)
+          setAlreadyConnected(true)
+        }
+        else {
+          setAlreadyConnected(false)
+        }
       })
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -82,16 +76,15 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
     
     let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
     
-    console.log("Here is our user",user,CONTRACT_ADDRESS, '=============')
-    await contract.methods.GetConnectionFile().call({from : user.account},async function(res) {
-
-        console.log("Connection File is here",res)
+    console.log("Here is our user------",user,CONTRACT_ADDRESS)
+      if(connectionFile) {
         let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
-        let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+        let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi, connectionFile);
         
         if(!alreadyConnected) {
-          await ConnectionFileContract.methods.AddHospitalConnection(selectedHospital).send({from : user.account}).then(
+          await ConnectionFileContract.methods.AddHospitalConnection(selectedHospital).send({from : user.account, gas: 500000}).then(
             (response)=>{
+              console.log("++++++++++",response)
                 console.log("Got correct call")
                 toast.success('Connection Successful !', {
                     position: "top-right",
@@ -103,6 +96,7 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
                       progress: undefined,
                     });
             },(error)=>{
+              console.log("++++++++++",error)
                 console.log("Got wrong call")
                 toast.error('Connection Failed !!', {
                     position: "top-right",
@@ -143,8 +137,7 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
                 throw(error)
             })
         }
-    
-      })
+      }
       handleClose();
   }
 

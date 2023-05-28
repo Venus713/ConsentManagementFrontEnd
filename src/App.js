@@ -38,7 +38,8 @@ export default function App() {
       await window.ethereum.enable();
       const provider = new Web3.providers.HttpProvider(
         // "https://sphinx.shardeum.org/"
-        "https://api.avax-test.network/ext/bc/C/rpc"
+        // "https://api.avax-test.network/ext/bc/C/rpc"
+        "http://127.0.0.1:7545"
       );
       web3.current = new Web3(provider);
       console.log(web3.current)

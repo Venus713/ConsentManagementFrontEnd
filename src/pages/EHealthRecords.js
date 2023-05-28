@@ -19,6 +19,7 @@ const DisplayRecords=({web3})=>{
     const [ConsentedRecords,setConsentedRecords] = useState([]);
     const [hospitalConnectOpen,sethospitalConnectOpen] = useState(false);
     const [connectedHospitals,setConnectedHospitals] = useState([]);
+    const [connectionFile, setConnectionFile] = useState();
 
     const options = {
       filterType: 'dropdown',
@@ -64,13 +65,14 @@ const DisplayRecords=({web3})=>{
       let ConnectedHospitals = [];
 
       console.log("Here is our user",user,CONTRACT_ADDRESS)
-      await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+      await contract.methods.GetConnectionFile().call({from : user.account},async function(err, res) {
   
           console.log("Connection File is here",res)
           let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
           let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+          setConnectionFile(res);
           
-          ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, function(err,res) {
+          ConnectionFileContract.methods.getHopitalConnections().call({from : user.account}, function(err, res) {
             setConnectedHospitals([...new Set(res)].filter((name) => {
               return name != ""
             }));
@@ -214,7 +216,7 @@ const DisplayRecords=({web3})=>{
             </Button>
         }
         {
-          <HospitalModalDialog open={hospitalConnectOpen} handleClose={HospitalModalClose} web3={web3}/>
+          <HospitalModalDialog open={hospitalConnectOpen} handleClose={HospitalModalClose} web3={web3} connectionFile={connectionFile} />
         }
         {
           user.role =="Pat"?(

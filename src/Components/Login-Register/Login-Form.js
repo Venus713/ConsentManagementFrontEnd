@@ -57,7 +57,7 @@ const LoginForm = ({ handleClose, web3 }) => {
   const dispatch = useDispatch();
 
   const injectedConnector = new InjectedConnector({
-    supportedChainIds: [1337,8082],
+    supportedChainIds: [1337,8082, 1337],
   });
   const { chainId, account, activate, active, library } = useWeb3React();
   

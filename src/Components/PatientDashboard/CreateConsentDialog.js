@@ -150,21 +150,19 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
         await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
-
             let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
-                async(err,AcceptedConnectionList) => {
-                console.log("Accepted COnnection List",AcceptedConnectionList)
-                AcceptedConnectionList.forEach(async (doctorId) => {
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account}).then(async(res) => {
+                console.log("Accepted COnnection List",res)
+                res.forEach(async (doctorId) => {
                     // console.log(doctorId);
                     axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(
                         (response)=>{
                             setConnections([...connections,response.data]);
                         }
                     )
-                });
+                })
             })
         })
         .catch(console.error);
@@ -185,7 +183,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         // console.log("This is id: ",selectedDoc.current);
         // console.log("These are records:",Array.from(records))
     
-        await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account}).then(
+        await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account, gas: 4712388}).then(
                 (response)=>{
                     toast.success('Consent Created!', {
                         position: "top-right",

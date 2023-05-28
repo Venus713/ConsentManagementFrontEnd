@@ -35,7 +35,7 @@ const RequestConsentDialog=({open,handleClose,connectionsProfile,web3})=>{
         
         // console.log(contract,patientId);
     
-        await contract.methods.requestConsent(description,selectedPatient.current).send({from: user.account}).then(
+        await contract.methods.requestConsent(description,selectedPatient.current).send({from: user.account, gas: 4712388}).then(
             (response)=>{
                 toast.success('Request sent!', {
                     position: "top-right",
