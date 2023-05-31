@@ -177,6 +177,10 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         
         // console.log(contract);
         selectedDoc.current = chosenDoc.substring(chosenDoc.indexOf('(')+1,chosenDoc.indexOf(')'))
+
+        const hospitalName = value.substring(value.indexOf('#')+1,value.indexOf('-'))
+
+        const ehrId = value.substring(value.indexOf('-')+1,value.length)
         
         // console.log(chosenDoc,selectedDoc.current);
 
@@ -185,16 +189,28 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
     
         await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account, gas: 4712388}).then(
                 (response)=>{
-                    toast.success('Consent Created!', {
-                        position: "top-right",
-                          autoClose: 2000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                        });
-                        window.location.reload(false);
+                    axios.post(`${baseURL}/Doc/Update-E-Health-Records/?metaId=${selectedDoc.current}&hospitalName=${hospitalName}&ehrId=${ehrId}`,{}, {
+                        headers: {
+                          // 'Authorization': 'Basic xxxxxxxxxxxxxxxxxxx',
+                          'Content-Type': 'application/json'
+                        }
+                      }).then(
+                        (response)=>{
+                            toast.success('Consent Created!', {
+                                position: "top-right",
+                                autoClose: 2000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            window.location.reload(false);
+                        },
+                        (error)=>{
+                          throw(error);
+                        }
+                      )
                 },(error)=>{
                     toast.error('Something went wrong', {
                         position: "top-right",

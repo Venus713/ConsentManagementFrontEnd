@@ -1,6 +1,30 @@
-## How to run project?
+    # How to run project?
 
-In the project directory, you can run:
+    ## Deploy SmartContract
+
+    - Install MetaMask, Truffle, and Ganach for localhost deployment
+    - Add localhost network to Metamask
+
+        Network name: LocalhostTestNet
+        New RPC URL: HTTP://127.0.0.1:7545
+        Chain ID: 1337
+        Currency symbol: ETH
+    - Import one of the accounts in Ganach into Metamask by using the account's privatekey(you can import several accounts for Docker and Pacient)
+    - Copy/Past a private key into .secret in contract-testing dir
+    - Deploy smart contract to localhost testnet.
+
+            ```
+            $ cd ./contract-testing
+            $ truffle migrate --network development
+            ```
+
+    ## How to run project?
+
+    In the project directory, you can run:
+
+    - Set a deployed contract address from the deployment result in the .env.
+    - Please set the secret key and the contract address in the application.properties file in the backend.
+    - Finally, run the backend and frontend.
 
 ### `npm start`
 

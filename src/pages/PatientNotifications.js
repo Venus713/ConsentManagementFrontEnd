@@ -22,6 +22,7 @@ const PatientNotifications=({web3})=>{
     const handleClickOpen=(request)=>{
         // console.log("this is my request",request.metaId)
         reqConsentDoc.current = request.metaId;
+        console.log('here0000000000000000000')
         // console.log(reqConsentDoc.current)
         setOpen(true);
     }
@@ -252,7 +253,7 @@ const PatientNotifications=({web3})=>{
 
                     if(elem["type"] == "consent"){
                         var request = requestedConsents.find(x => x["Id"] == elem["Id"]);
-                        // console.log(request)
+                        console.log("**************************************", request)
                         if(request) {
                             return <NotificationProp title={"Request Consent"} data={request} button1Val="Create Consent" button2Val="Reject" button1ValClick = {() => handleClickOpen(request)} button2ValClick={()=>{}} />
                         }

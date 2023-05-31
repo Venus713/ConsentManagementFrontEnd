@@ -85,18 +85,31 @@ const HospitalModalDialog = ({ open, handleClose, web3, connectionFile}) => {
           await ConnectionFileContract.methods.AddHospitalConnection(selectedHospital).send({from : user.account, gas: 500000}).then(
             (response)=>{
               console.log("++++++++++",response)
-                console.log("Got correct call")
-                toast.success('Connection Successful !', {
+              console.log("Got correct call")
+              console.log('*************************', user.role)
+              axios.post(`${baseURL}/${user.role}/Add-E-Health-Records/?metaId=${user.account}&hospitalName=${selectedHospital}`,{}, {
+                headers: {
+                  // 'Authorization': 'Basic xxxxxxxxxxxxxxxxxxx',
+                  'Content-Type': 'application/json'
+                }
+              }).then(
+                (response)=>{
+                  toast.success('Connection Successful with Db update !', {
                     position: "top-right",
-                      autoClose: 2000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                    });
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                  });
+                },
+                (error)=>{
+                  throw(error);
+                }
+              )
             },(error)=>{
-              console.log("++++++++++",error)
+              console.log("----------------------",error)
                 console.log("Got wrong call")
                 toast.error('Connection Failed !!', {
                     position: "top-right",

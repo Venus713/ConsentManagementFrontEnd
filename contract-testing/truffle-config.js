@@ -68,6 +68,16 @@ module.exports = {
       confirmations: 2,
       skipDryRun: true
     },
+    goerli: {
+      networkCheckTimeout: 1000000,    
+      timeoutBlocks: 2000,
+      // addressIndex: 2, 
+      provider: () => new HDWalletProvider(mnemonic, `https://eth-goerli.g.alchemy.com/v2/TODj3l9ekhLq6gQgXmLpxpsRA0H4U50a`),
+      network_id: 43113,
+      confirmations: 2,
+      skipDryRun: true,
+      gasPrice: web3.utils.toWei('5000', 'gwei'),
+    },
     // Another network with more advanced options...
     advanced: {
     // // //   // port: 8777,             // Custom port
